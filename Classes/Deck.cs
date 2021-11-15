@@ -7,6 +7,7 @@ namespace cernejJack.Classes
     class Deck
     {
         public List<Card> cards;
+        public string ahoj = "ahoj";
         public Deck()
         {
 
@@ -14,9 +15,10 @@ namespace cernejJack.Classes
 
         public void createDeck()
         {
+            this.ahoj = "adsf";
             for (int i = 1; i <= 52; i++)
             {
-                this.cards[i] = new Card(i%13*4);
+               // this.cards[i] = new Card(i%13*4);
             }
         }
     }
