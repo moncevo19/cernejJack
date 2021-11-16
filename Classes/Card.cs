@@ -6,15 +6,13 @@ namespace cernejJack.Classes
 {
     class Card
     {
-        public int card;
-        public Card(int _card)
-        {
-            this.card = _card;
-        }
-        public Card()
-        {
-            this.card = 1*4;
-        }
+        public int value;
+        public int color;
 
+        public Card(int _value, int _color)
+        {
+            this.value = _value;
+            this.color = _color;
+        }
     }
 }

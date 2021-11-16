@@ -8,6 +8,42 @@ namespace cernejJack
     {
         static void Main(string[] args)
         {
+
+            Deck deck = new Deck(); 
+            Player player = new Player();
+            Dealer dealer = new Dealer(deck, player);
+
+            deck.createDeck();
+
+            while (true)
+            {
+                deck.shuffleDeck();
+
+                dealer.giveCardTo(dealer, 2); //dealer da 2 karty sobe
+
+                dealer.giveCardTo(player, 2); //dealer da 2 karty hraci
+
+                Console.WriteLine("dealer:");
+                Console.WriteLine(dealer.cards[0].value);//dealer ukaze jednu svoji kartu
+
+
+                Console.WriteLine("hrac:");
+                player.writeCards(); //hrac ukaze karty
+                Console.WriteLine(player.sumCards());
+                Console.WriteLine("kolik chces vsadit?"); //nahrad UI //co to dat do dealera???
+                dealer.bet();
+                //Console.WriteLine("hit, stand"); //nahrad UI
+
+                
+
+                Console.ReadKey();
+                dealer.destroyCards(player);
+                dealer.destroyCards(dealer);
+            }//hlavni while
+
+            
+
+
             //uvodni obrazovka
             welcomeBJ();
             
