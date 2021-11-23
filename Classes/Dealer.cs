@@ -82,7 +82,7 @@ namespace cernejJack.Classes
             
             while (true)
             {
-                Console.WriteLine("dej mi penize");
+                Console.WriteLine("kolik chces vsadit?");
                 string bet = this.player.bet();
                 if (int.TryParse(bet, out int value))
                 {
@@ -99,13 +99,14 @@ namespace cernejJack.Classes
                         {
                             this.playersBet = value;
                             this.player.chips -= value;
+                            Console.WriteLine("dik");
+                            break;
                         } else
                         {
                             Console.WriteLine("nemas dost penez");
                         }
                         
-                        Console.WriteLine("dik");
-                        break;
+                        
                     }
                     
                 } else
@@ -121,8 +122,9 @@ namespace cernejJack.Classes
             string playersAction = Console.ReadLine();
             if (this.player.sumCards() > 21)
             {
+                Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
-                this.player.writeCards();
+                
                 gameOver();
             }
             if (playersAction == "hit")
@@ -132,6 +134,7 @@ namespace cernejJack.Classes
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
                 this.player.writeCards();
+                
                 if (this.gameOverBool)
                 {
                     this.playersActions();
@@ -142,7 +145,7 @@ namespace cernejJack.Classes
             {
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
-                this.player.writeCards();
+                
             } 
             else if(playersAction == "double")      
             {
@@ -152,7 +155,7 @@ namespace cernejJack.Classes
                 this.giveCardTo(player);
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
-                this.player.writeCards();
+                
             } else
             {
                 Console.WriteLine("akce neexistuje");
@@ -201,18 +204,18 @@ namespace cernejJack.Classes
         }
         public void dealersMove()
         {
-            if (this.sumCards() < 17)
+            if (this.sumCards() < 17 && this.sumCards() < this.player.sumCards())
             {
                 this.giveCardTo(this);
-                Console.WriteLine("dealer");
-                this.writeCards();
-                Console.WriteLine("hrac");
-                this.player.writeCards();
                 this.dealersMove();
             }
         }
         public void writeCards()
         {
+            
+            
+            //this.giveCardTo(this);
+            Console.WriteLine("dealer (" + this.sumCards() + ")");
             for (int i = 0; i < this.cards.Count; i++)
             {
                 Console.WriteLine(this.cards[i].value);
@@ -220,41 +223,43 @@ namespace cernejJack.Classes
         }
         public void evaluate()
         {
+            Console.WriteLine("//dealer: " + this.sumCards());
+            Console.WriteLine("//player: " + this.player.sumCards());
             if (this.gameOverBool)
                 {
 
             
                 if (this.sumCards() > 21)
                 {
-                    Console.WriteLine("dealer");
+                    
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    this.player.writeCards();
+                    
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
                 }
                 else if (this.sumCards() == player.sumCards())
                 {
-                    Console.WriteLine("dealer");
+                    
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    this.player.writeCards();
+                    
                     this.playersChips(playersBet, true);
                 } else if (this.player.sumCards() > this.sumCards()) 
                 {
-                    Console.WriteLine("dealer");
+                    
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    this.player.writeCards();
+                    
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
                 }
                 else
                 {
-                    Console.WriteLine("dealer");
+                    
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    this.player.writeCards();
+                    
                     Console.WriteLine("prohral jsi");
                 }
             }

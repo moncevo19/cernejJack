@@ -18,8 +18,8 @@ namespace cernejJack.Classes
         {
             for (int i = 1; i <= 52; i++) //vygeneruj 1 balik karet
             {
-                this.cards.Add(new Card(i % 13, i % 4));
-                //cards.Add(new Card(0, 0)); //balik jen es
+                this.cards.Add(new Card(i % 13 + 1, i % 4));
+                //cards.Add(new Card(1, 0)); //balik jen es
             }
         }
         public void createDeck(int n) //overloading

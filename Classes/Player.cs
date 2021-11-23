@@ -9,12 +9,15 @@ namespace cernejJack.Classes
     {
         public int chips;
         public List<Card> cards = new List<Card>();
+
         public Player()
         {
             this.chips = 100;  
         }
         public void writeCards()
         {
+            
+            Console.WriteLine("hrac");
             for (int i = 0; i < this.cards.Count; i++) 
             {
                 Console.WriteLine(this.cards[i].value);
@@ -26,7 +29,7 @@ namespace cernejJack.Classes
             int aces = 0;
             for (int i = 0; i < this.cards.Count; i++)
             {
-                if (this.cards[i].value == 0)
+                if (this.cards[i].value == 1)
                 {
                     aces++;
                 }
