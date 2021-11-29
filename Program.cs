@@ -1,15 +1,26 @@
-﻿using cernejJack.Classes;
+﻿//pokud zbyde cas zahashuj heslo
+using cernejJack.Classes;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace cernejJack
 {
     class Program
     {
-        
+        public class Data
+        {
+            public string Player { get; set; }
+            public string Pass { get; set; }
+            public int Chips { get; set; }
+            
+        }
         static void Main(string[] args)
         {
+            string path = "T:\\docroot\\c#\\cernejJack\\players.json";
             string menuAction = "";
             bool menuBool = true;
             bool gameBool = true;
@@ -18,22 +29,53 @@ namespace cernejJack
             //uvodni obrazovka
             //welcomeBJ();
 
+        
+            
+
+            
+            
+            //Console.WriteLine(File.ReadAllText("players.json"));
+            //Console.WriteLine(Directory.GetCurrentDirectory());
+
             while (loginBool)
             {
                 header();
-                if (true)//players json je prazdny
+                if (false)//players json je prazdny
                 {
                     while (true)
-                    {//pridej tohle do jasonu
+                    {//overuj nejaky kraviny
                         string nick;
                         string pass;
+                        Console.WriteLine("Registrace");
                         Console.WriteLine("uzivatelske jmeno: ");
                         nick = Console.ReadLine();
                         Console.WriteLine("heslo: ");
                         pass = Console.ReadLine();
+                        List<Data> _data = new List<Data>();
+                        _data.Add(new Data()
+                        {
+                            Player = nick,
+                            Chips = 100,
+                            Pass = pass
+                        });
+                        string json = System.Text.Json.JsonSerializer.Serialize(_data);
+                        File.WriteAllText(path, json);//musim pozdeji zmenit na relativni cestu
+                        Console.WriteLine(File.ReadAllText(path));
 
 
                     }
+                }
+                else
+                {
+                    var _data = JsonConvert.DeserializeObject<List<Data>>(path);
+                    _data.Add(new Data() {
+                        Player = "adsf",
+                        Chips = 100,
+                        Pass = "heslo"
+                    });
+                    var convertedJson = JsonConvert.SerializeObject(_data, Formatting.Indented);
+                    Console.WriteLine(File.ReadAllText(path));
+
                 }
             }
 

@@ -1,3 +1,25 @@
 {
-
+  "players":
+  [
+    {
+      "Player": "jajodsf",
+      "Pass": "654",
+      "Chips": 100
+    },
+    {
+      "Player": "jajodsf",
+      "Pass": "654",
+      "Chips": 100
+    },
+    {
+      "Player": "jajodsf",
+      "Pass": "654",
+      "Chips": 100
+    },
+    {
+      "Player": "jajodsf",
+      "Pass": "654",
+      "Chips": 100
+    }
+  ]
 }
