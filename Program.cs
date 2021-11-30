@@ -11,16 +11,17 @@ namespace cernejJack
 {
     class Program
     {
-        public class Data
-        {
+       // public TextWriter sw = new StreamWriter("T:\\docroot\\c#\\cernejJack\\players.csv");
+       /*  public class Data
+       {
             public string Player { get; set; }
             public string Pass { get; set; }
             public int Chips { get; set; }
             
-        }
+        }*/
         static void Main(string[] args)
         {
-            string path = "T:\\docroot\\c#\\cernejJack\\players.json";
+            string path = "T:\\docroot\\c#\\cernejJack\\players.csv";
             string menuAction = "";
             bool menuBool = true;
             bool gameBool = true;
@@ -40,7 +41,7 @@ namespace cernejJack
             while (loginBool)
             {
                 header();
-                if (false)//players json je prazdny
+                if (true)//players json je prazdny
                 {
                     while (true)
                     {//overuj nejaky kraviny
@@ -51,7 +52,12 @@ namespace cernejJack
                         nick = Console.ReadLine();
                         Console.WriteLine("heslo: ");
                         pass = Console.ReadLine();
-                        List<Data> _data = new List<Data>();
+                        using (TextWriter sw = new StreamWriter(path))
+                        { 
+                            sw.WriteLine("{0},{1},{2}", nick, pass, 100);
+                        }
+                        break;
+                        /*List<Data> _data = new List<Data>();
                         _data.Add(new Data()
                         {
                             Player = nick,
@@ -60,21 +66,31 @@ namespace cernejJack
                         });
                         string json = System.Text.Json.JsonSerializer.Serialize(_data);
                         File.WriteAllText(path, json);//musim pozdeji zmenit na relativni cestu
-                        Console.WriteLine(File.ReadAllText(path));
+                        Console.WriteLine(File.ReadAllText(path));*/
 
 
                     }
                 }
                 else
                 {
-                    var _data = JsonConvert.DeserializeObject<List<Data>>(path);
-                    _data.Add(new Data() {
-                        Player = "adsf",
-                        Chips = 100,
-                        Pass = "heslo"
-                    });
-                    var convertedJson = JsonConvert.SerializeObject(_data, Formatting.Indented);
-                    Console.WriteLine(File.ReadAllText(path));
+                    Console.WriteLine("Prihlaseni");
+                    string nick = Console.ReadLine();
+
+                    Console.WriteLine("Heslo");
+                    string heslo = Console.ReadLine();
+                    /*using (TextWriter sw = new StreamWriter(path))
+                    {
+                        sw.WriteLine("{0},{1},{2}", "ahoj", 1, "adf");
+                    }*/
+                    break;
+                    /* var _data = JsonConvert.DeserializeObject<List<Data>>(path);
+                     _data.Add(new Data() {
+                         Player = "adsf",
+                         Chips = 100,
+                         Pass = "heslo"
+                     });
+                     var convertedJson = JsonConvert.SerializeObject(_data, Formatting.Indented);
+                     Console.WriteLine(File.ReadAllText(path));*/
 
                 }
             }
