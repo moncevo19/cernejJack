@@ -11,17 +11,19 @@ namespace cernejJack
 {
     class Program
     {
-       // public TextWriter sw = new StreamWriter("T:\\docroot\\c#\\cernejJack\\players.csv");
-       /*  public class Data
-       {
-            public string Player { get; set; }
-            public string Pass { get; set; }
-            public int Chips { get; set; }
-            
-        }*/
+        // public TextWriter sw = new StreamWriter("T:\\docroot\\c#\\cernejJack\\players.csv");
+        /*  public class Data
+        {
+             public string Player { get; set; }
+             public string Pass { get; set; }
+             public int Chips { get; set; }
+
+         }*/
+        public static string csvSoubor = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "players.csv"); //relativni cesta
         static void Main(string[] args)
         {
-            string path = "T:\\docroot\\c#\\cernejJack\\players.csv";
+            
+        string path = "T:\\docroot\\c#\\cernejJack\\players.csv";
             string menuAction = "";
             bool menuBool = true;
             bool gameBool = true;
@@ -44,19 +46,34 @@ namespace cernejJack
                 if (true)//players json je prazdny
                 {
                     while (true)
-                    {//overuj nejaky kraviny
+                    {
+                        Console.Clear();
+                        header();
+                    //overuj nejaky kraviny
                         string nick;
                         string pass;
                         Console.WriteLine("Registrace");
                         Console.WriteLine("uzivatelske jmeno: ");
                         nick = Console.ReadLine();
+
+                        string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);
+                        for (int i = 0; i < usersArrayLines.Length; i++) //uloz si csv do pole podle radku
+                        {
+                            string[] uzivatel = usersArrayLines[i].Split(";"); //ulozi do pole uzivatel i-tou radku
+                            if (nick == uzivatel[0])
+                            {
+                                Console.WriteLine("jmeno uz existuje");
+                                continue;
+                            }
+                        }
                         Console.WriteLine("heslo: ");
                         pass = Console.ReadLine();
-                        using (TextWriter sw = new StreamWriter(path))
-                        { 
-                            sw.WriteLine("{0},{1},{2}", nick, pass, 100);
+
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter(csvSoubor, true))
+                        {
+                            file.WriteLine(nick + ";" + pass + ";" + 100);
                         }
-                        break;
+                        //break;
                         /*List<Data> _data = new List<Data>();
                         _data.Add(new Data()
                         {
@@ -93,6 +110,7 @@ namespace cernejJack
                      Console.WriteLine(File.ReadAllText(path));*/
 
                 }
+                break;
             }
 
             //menu
@@ -249,3 +267,88 @@ Vítej ve hře Black Jack pro pokračování stiskni jakoukoli klávesu.
 
     }//class program
 }
+/* (chi pouzit jen funkce na praci se soubory (vzdal jsem to potom co jsem delal nekolik hodin v kuse json a nefungoval mi))
+ * //public static string csvSoubor = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "users.csv"); //relativni cesta
+
+//funkce na přidání uživatele do csv souboru
+        public void pridatZaznam(string data1, int data2, string soubor)
+        {
+            try
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(soubor, true))
+                {
+                    file.WriteLine(data1.ToLower() + ";" + data2.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Nastal error: " + ex);
+            }
+        }
+        //funkce na hledání uživatele
+        internal string hledatZaznam(string hledanyVyraz, int pozice = 0)
+        {
+            try
+            {
+                string[] radky = System.IO.File.ReadAllLines(csvSoubor);
+ 
+                for (int i = 0; i < radky.Length; i++)
+                {
+                    string[] pole = radky[i].Split(";");
+                    if (zaznamJeStejny(hledanyVyraz.ToLower(), pole, pozice))
+                    {
+                        //Console.WriteLine("Nalezeno");
+                        return pole[1];
+                    }
+                }
+ 
+                return "Uživatel nebyl nalezen.";
+            }
+            catch (Exception ex)
+            {
+                return "Nastal error: " + ex;
+            }
+        }
+        //funkce na ověření hledaného výrazu v souboru
+        internal bool zaznamJeStejny(string hledanyVyraz, string[] zaznam, int pozice = 0)
+        {
+            if (zaznam[pozice].Equals(hledanyVyraz))
+            {
+                return true;
+            }
+            return false;
+        }
+        internal void upravitZaznam(int pozice = 0)
+        {
+            try
+            {
+                //nacist aktualni data
+                string[] radky = System.IO.File.ReadAllLines(csvSoubor);
+ 
+                //array pro nová data
+                string[] data_temp = new string[radky.Length];
+ 
+                //filtrace upravených a stávajících dat
+                for (int i = 0; i < radky.Length; i++)
+                {
+                    string[] radek = radky[i].Split(";");
+ 
+                    if (!(zaznamJeStejny(jmeno, radek)))
+                    {
+                        data_temp[i] = radek[0] + ";" + radek[1];
+                    } else
+                    {
+                        data_temp[i] = jmeno + ";" + skore.ToString();
+                    }
+                }
+ 
+                //zapsat upravená do souboru
+                File.WriteAllLines(csvSoubor, data_temp);
+ 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Nastal error: " + ex);
+            }
+        }
+ * */
