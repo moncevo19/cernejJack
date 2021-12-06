@@ -1,12 +1,11 @@
 ﻿//pokud zbyde cas zahashuj heslo
 using cernejJack.Classes;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading;
+
 namespace cernejJack
 {
     class Program
@@ -22,40 +21,80 @@ namespace cernejJack
         public static string csvSoubor = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "players.csv"); //relativni cesta
         static void Main(string[] args)
         {
-            
-        string path = "T:\\docroot\\c#\\cernejJack\\players.csv";
+
+            string path = "T:\\docroot\\c#\\cernejJack\\players.csv";
             string menuAction = "";
             bool menuBool = true;
             bool gameBool = true;
             bool loginBool = true;
-            string[] menuActions = { "h","p","c","n"};
+            string[] menuActions = { "h", "p", "c", "n" };
+            string playersName = "";
+            Deck deck = new Deck();
+            Player player = new Player();
+            Dealer dealer = new Dealer(deck, player);
             //uvodni obrazovka
             //welcomeBJ();
 
-        
-            
 
-            
-            
-            //Console.WriteLine(File.ReadAllText("players.json"));
-            //Console.WriteLine(Directory.GetCurrentDirectory());
+            void loading(string slovo, int time)
+            {
+                for (int i = 0; i < slovo.Length; i++)
+                {
+                    for (int j = 0; j < i; j++)
+                    {
+                        Console.Write(slovo[j]);
+                        
+                    }
+                    Thread.Sleep(time);
+                    Console.Clear();
 
+                }
+                Console.WriteLine(slovo);
+                Console.ReadKey();
+            }
+            loading("BLACK JACK",250);
             while (loginBool)
             {
+            StartOfLogin:
+                Console.Clear();
+                bool _loginBool = false;
+                bool registerBool = false;
                 header();
-                if (true)//players json je prazdny
+                Console.WriteLine("Prihlasit/Registrovat");
+                var tmp = Console.ReadKey().Key;
+                if (tmp == ConsoleKey.P)
+                {
+                    _loginBool = true;
+                }
+                else if (tmp == ConsoleKey.R)
+                {
+                    registerBool = true;
+                }
+                else
+                {
+                    continue;
+                }
+                Console.Clear();
+                header();
+
+
+                if (registerBool)
                 {
                     while (true)
                     {
+                    MultipleUsers:
                         Console.Clear();
                         header();
-                    //overuj nejaky kraviny
+                        //overuj nejaky kraviny
                         string nick;
                         string pass;
                         Console.WriteLine("Registrace");
                         Console.WriteLine("uzivatelske jmeno: ");
                         nick = Console.ReadLine();
-
+                        if (nick.ToLower() == "z")
+                        {
+                            goto StartOfLogin;
+                        }
                         string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);
                         for (int i = 0; i < usersArrayLines.Length; i++) //uloz si csv do pole podle radku
                         {
@@ -63,27 +102,24 @@ namespace cernejJack
                             if (nick == uzivatel[0])
                             {
                                 Console.WriteLine("jmeno uz existuje");
-                                continue;
+                                System.Threading.Thread.Sleep(1000);
+                                goto MultipleUsers;
                             }
                         }
                         Console.WriteLine("heslo: ");
                         pass = Console.ReadLine();
-
+                        if (pass.ToLower() == "z")
+                        {
+                            goto StartOfLogin;
+                        }
                         using (System.IO.StreamWriter file = new System.IO.StreamWriter(csvSoubor, true))
                         {
                             file.WriteLine(nick + ";" + pass + ";" + 100);
                         }
-                        //break;
-                        /*List<Data> _data = new List<Data>();
-                        _data.Add(new Data()
-                        {
-                            Player = nick,
-                            Chips = 100,
-                            Pass = pass
-                        });
-                        string json = System.Text.Json.JsonSerializer.Serialize(_data);
-                        File.WriteAllText(path, json);//musim pozdeji zmenit na relativni cestu
-                        Console.WriteLine(File.ReadAllText(path));*/
+                        player.nick = nick;
+                        player.pass = pass;
+                        player.chips = 100;
+                        break;
 
 
                     }
@@ -91,23 +127,57 @@ namespace cernejJack
                 else
                 {
                     Console.WriteLine("Prihlaseni");
+                    Console.WriteLine("Jmeno:");
                     string nick = Console.ReadLine();
+                    if (nick.ToLower() == "z")
+                    {
+                        goto StartOfLogin;
+                    }
+                    string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);
+                    for (int i = 0; i < usersArrayLines.Length; i++) //uloz si csv do pole podle radku
+                    {
+                        string[] uzivatel = usersArrayLines[i].Split(";"); //ulozi do pole uzivatel i-tou radku
+                        if (nick == uzivatel[0])
+                        {
 
-                    Console.WriteLine("Heslo");
-                    string heslo = Console.ReadLine();
+                            while (true)
+                            {
+                                Console.Clear();
+                                header();
+                                Console.WriteLine("Prihlaseni");
+                                Console.WriteLine("Jmeno:");
+                                Console.WriteLine(nick);
+                                Console.WriteLine("heslo:");
+                                string pass = Console.ReadLine();
+                                if (pass.ToLower() == "z")
+                                {
+                                    goto StartOfLogin;
+                                }
+                                if (pass == uzivatel[1])
+                                {
+                                    Console.WriteLine("uspesne");
+                                    Console.ReadKey();
+                                    player.chips = Int32.Parse(uzivatel[2]);
+                                    player.nick = nick;
+                                    player.pass = pass;
+
+                                    break;
+                                }
+                            }
+
+
+                        }
+
+                    }
+
+
+
                     /*using (TextWriter sw = new StreamWriter(path))
                     {
                         sw.WriteLine("{0},{1},{2}", "ahoj", 1, "adf");
                     }*/
+
                     break;
-                    /* var _data = JsonConvert.DeserializeObject<List<Data>>(path);
-                     _data.Add(new Data() {
-                         Player = "adsf",
-                         Chips = 100,
-                         Pass = "heslo"
-                     });
-                     var convertedJson = JsonConvert.SerializeObject(_data, Formatting.Indented);
-                     Console.WriteLine(File.ReadAllText(path));*/
 
                 }
                 break;
@@ -116,12 +186,13 @@ namespace cernejJack
             //menu
             while (gameBool)
             {
-                bool error = false;
                 
+                bool error = false;
+
                 while (menuBool)
                 {
                     Console.Clear();
-
+                    Console.WriteLine(playersName);
                     menu();
                     if (error)
                     {
@@ -138,20 +209,20 @@ namespace cernejJack
                         error = true;
                     }
 
-                    
+
                 }
-                
-            
-            
+
+
+
 
                 if (menuAction == "h")
                 {
+                    dealer.chipsUpdate();
                     Console.Clear();
+                    Console.WriteLine(player.chips);
                     header();
-                    Deck deck = new Deck(); 
-                    Player player = new Player();
-                    Dealer dealer = new Dealer(deck, player);
-            
+
+
                     deck.createDeck();
                     deck.shuffleDeck();
 
@@ -179,17 +250,17 @@ namespace cernejJack
                         //Console.WriteLine("hit, stand"); //nahrad UI
 
                         Console.WriteLine("pro navrat do menu stiskni 'm'");
-                       
+
                         if (Console.ReadKey().Key == ConsoleKey.M)
                         {
                             break;
                         }
-                        
+
                         dealer.destroyCards(player);
                         dealer.destroyCards(dealer);
                     }//hlavni while
-                } 
-                else if(menuAction == "p")
+                }
+                else if (menuAction == "p")
                 {
                     Console.Clear();
                     rules();
@@ -235,7 +306,7 @@ Vítej ve hře Black Jack pro pokračování stiskni jakoukoli klávesu.
             Console.Clear();
 
         }
-        
+
         static void header()
         {
             Console.WriteLine("    BLACK JACK ♦♣♠♥");
@@ -249,9 +320,9 @@ Vítej ve hře Black Jack pro pokračování stiskni jakoukoli klávesu.
             Console.WriteLine("-\x1b[1mP\x1b[0mravidla (pro otevření stiskni 'P')");
             Console.WriteLine("-\x1b[1mC\x1b[0mredits");
             Console.WriteLine("-\x1b[1mN\x1b[0mejlepší hráči");
-            
-            
-            
+
+
+
         }
         static void rules()
         {

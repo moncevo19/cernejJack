@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace cernejJack.Classes
 {
+
     class Dealer
     {
+        public static string csvSoubor = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "players.csv"); //relativni cesta
         public bool gameOverBool = true;
         public List<Card> cards = new List<Card>();
         public Deck deck;
@@ -35,15 +38,15 @@ namespace cernejJack.Classes
                     this.gameOver();
                 }
             }
-            
-            
+
+
         }
         public void giveCardTo(Player player, int n)
         {
             if (this.gameOverBool)
             {
 
-            
+
                 player.cards.AddRange((List<Card>)deck.giveCard(n));
                 if (player.sumCards() > 21)
                 {
@@ -61,15 +64,39 @@ namespace cernejJack.Classes
         {
             dealer.cards.Clear();
         }
+
         public void playersChips(int n, bool _bool)
         {
+            string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);
+            for (int i = 0; i < usersArrayLines.Length; i++) //uloz si csv do pole podle radku
+            {
+                string[] uzivatel = usersArrayLines[i].Split(";"); //ulozi do pole uzivatel i-tou radku
+                if (this.player.nick == uzivatel[0])
+                {
+                    if (_bool)
+                    {
+
+                        uzivatel[2] = (Int32.Parse(uzivatel[2]) + n).ToString();
+                    }
+                    else
+                    {
+                        //uzivatel[2] -= n;
+                    }
+
+
+                }
+            }
+
 
             if (_bool)
             {
                 this.player.chips += n;
-            } else
+                chipsUpdate();
+            }
+            else
             {
                 this.player.chips -= n;
+                chipsUpdate();
             }
 
             if (this.player.chips <= 0)
@@ -79,7 +106,7 @@ namespace cernejJack.Classes
         }
         public void bet()
         {
-            
+
             while (true)
             {
                 Console.WriteLine("kolik chces vsadit?");
@@ -93,27 +120,33 @@ namespace cernejJack.Classes
                     else if (value == 0)
                     {
                         Console.WriteLine("musis vsadit vic 0");
-                    } else
+                    }
+                    else
                     {
-                        if (this.player.chips - value > 0)
+                        if (this.player.chips - value >= 0)
                         {
+                            Console.WriteLine(this.player.chips + "wtf " + value);
                             this.playersBet = value;
                             this.player.chips -= value;
+                            chipsUpdate();
                             Console.WriteLine("dik");
                             break;
-                        } else
+                        }
+                        else
                         {
+                            Console.WriteLine(this.player.chips + "wtf " + value);
                             Console.WriteLine("nemas dost penez");
                         }
-                        
-                        
+
+
                     }
-                    
-                } else
+
+                }
+                else
                 {
                     Console.WriteLine("jses uplne retardovana.");
                 }
-                    
+
             }
         }
         public void playersActions()
@@ -124,39 +157,41 @@ namespace cernejJack.Classes
             {
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
-                
+
                 gameOver();
             }
             if (playersAction == "hit")
             {
-               
+
                 this.giveCardTo(player);
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
                 this.player.writeCards();
-                
+
                 if (this.gameOverBool)
                 {
                     this.playersActions();
                 }
-                
+
             }
-            else if(playersAction == "stand")
+            else if (playersAction == "stand")
             {
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
-                
-            } 
-            else if(playersAction == "double")      
+
+            }
+            else if (playersAction == "double")
             {
-                
+
                 player.chips -= this.playersBet;
+                chipsUpdate();
                 this.playersBet *= 2;
                 this.giveCardTo(player);
                 Console.WriteLine("dealer");
                 Console.WriteLine(this.cards[0].value);
-                
-            } else
+
+            }
+            else
             {
                 Console.WriteLine("akce neexistuje");
                 this.playersActions();
@@ -212,8 +247,8 @@ namespace cernejJack.Classes
         }
         public void writeCards()
         {
-            
-            
+
+
             //this.giveCardTo(this);
             Console.WriteLine("dealer (" + this.sumCards() + ")");
             for (int i = 0; i < this.cards.Count; i++)
@@ -226,40 +261,41 @@ namespace cernejJack.Classes
             Console.WriteLine("//dealer: " + this.sumCards());
             Console.WriteLine("//player: " + this.player.sumCards());
             if (this.gameOverBool)
-                {
+            {
 
-            
+
                 if (this.sumCards() > 21)
                 {
-                    
+
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    
+
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
                 }
                 else if (this.sumCards() == player.sumCards())
                 {
-                    
+
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    
+
                     this.playersChips(playersBet, true);
-                } else if (this.player.sumCards() > this.sumCards()) 
+                }
+                else if (this.player.sumCards() > this.sumCards())
                 {
-                    
+
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    
+
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
                 }
                 else
                 {
-                    
+
                     this.writeCards();
                     Console.WriteLine("hrac");
-                    
+
                     Console.WriteLine("prohral jsi");
                 }
             }
@@ -268,7 +304,29 @@ namespace cernejJack.Classes
         {
             Console.WriteLine("prohral jsi");
             this.gameOverBool = false;
-            
+
+        }
+        public void chipsUpdate()
+        {
+            string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);//uloz si csv do pole podle radku
+            for (int i = 0; i < usersArrayLines.Length; i++) 
+            {
+                string[] uzivatel = usersArrayLines[i].Split(";"); //ulozi do pole uzivatel i-tou radku
+                if (this.player.nick == uzivatel[0])
+                {
+                    usersArrayLines[i] = this.player.nick + ";" + this.player.pass + ";" + this.player.chips;
+                }
+            }
+            File.WriteAllText(Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "players.csv"), String.Empty);
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(csvSoubor, true))
+            {
+                for (int i = 0; i < usersArrayLines.Length; i++)
+                {
+                    
+                    file.WriteLine(usersArrayLines[i]);
+                }
+                //file.WriteLine(usersArrayLines);
+            }
         }
     } //class dealer
 }

@@ -9,16 +9,19 @@ namespace cernejJack.Classes
     {
         public int chips;
         public List<Card> cards = new List<Card>();
+        public string nick = "";
+        public string pass = "";
 
         public Player()
         {
-            this.chips = 100;  
+
         }
+
         public void writeCards()
         {
-            
+
             Console.WriteLine("hrac");
-            for (int i = 0; i < this.cards.Count; i++) 
+            for (int i = 0; i < this.cards.Count; i++)
             {
                 Console.WriteLine(this.cards[i].value);
             }
@@ -40,7 +43,7 @@ namespace cernejJack.Classes
                 else
                 {
                     sum += this.cards[i].value;
-                    
+
                 }
             }
             while (aces > 0)
@@ -49,17 +52,18 @@ namespace cernejJack.Classes
                 {
                     sum += 11;
                     aces--;
-                } else
+                }
+                else
                 {
                     sum++;
                     aces--;
                 }
-                
+
 
             }
-            
-            
-            
+
+
+
             return sum;
         }
         public string bet()
