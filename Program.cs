@@ -52,7 +52,7 @@ namespace cernejJack
                 Console.WriteLine(slovo);
                 Console.ReadKey();
             }
-            loading("BLACK JACK",250);
+            //loading("BLACK JACK",250);
             while (loginBool)
             {
             StartOfLogin:
@@ -155,8 +155,8 @@ namespace cernejJack
                                 }
                                 if (pass == uzivatel[1])
                                 {
-                                    Console.WriteLine("uspesne");
-                                    Console.ReadKey();
+                                    Console.WriteLine("uspesne prihlaseno");
+                                    Thread.Sleep(250);
                                     player.chips = Int32.Parse(uzivatel[2]);
                                     player.nick = nick;
                                     player.pass = pass;
@@ -219,7 +219,6 @@ namespace cernejJack
                 {
                     dealer.chipsUpdate();
                     Console.Clear();
-                    Console.WriteLine(player.chips);
                     header();
 
 
@@ -237,7 +236,7 @@ namespace cernejJack
 
                         dealer.giveCardTo(player, 2); //dealer da 2 karty hraci
 
-                        Console.WriteLine("dealer");
+                        Console.WriteLine("dealerovy karty: (" + dealer.sumCards() + ")");
                         Console.WriteLine(dealer.cards[0].value);//dealer ukaze jednu svoji kartu
 
 
@@ -338,88 +337,3 @@ Vítej ve hře Black Jack pro pokračování stiskni jakoukoli klávesu.
 
     }//class program
 }
-/* (chi pouzit jen funkce na praci se soubory (vzdal jsem to potom co jsem delal nekolik hodin v kuse json a nefungoval mi))
- * //public static string csvSoubor = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "users.csv"); //relativni cesta
-
-//funkce na přidání uživatele do csv souboru
-        public void pridatZaznam(string data1, int data2, string soubor)
-        {
-            try
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(soubor, true))
-                {
-                    file.WriteLine(data1.ToLower() + ";" + data2.ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Nastal error: " + ex);
-            }
-        }
-        //funkce na hledání uživatele
-        internal string hledatZaznam(string hledanyVyraz, int pozice = 0)
-        {
-            try
-            {
-                string[] radky = System.IO.File.ReadAllLines(csvSoubor);
- 
-                for (int i = 0; i < radky.Length; i++)
-                {
-                    string[] pole = radky[i].Split(";");
-                    if (zaznamJeStejny(hledanyVyraz.ToLower(), pole, pozice))
-                    {
-                        //Console.WriteLine("Nalezeno");
-                        return pole[1];
-                    }
-                }
- 
-                return "Uživatel nebyl nalezen.";
-            }
-            catch (Exception ex)
-            {
-                return "Nastal error: " + ex;
-            }
-        }
-        //funkce na ověření hledaného výrazu v souboru
-        internal bool zaznamJeStejny(string hledanyVyraz, string[] zaznam, int pozice = 0)
-        {
-            if (zaznam[pozice].Equals(hledanyVyraz))
-            {
-                return true;
-            }
-            return false;
-        }
-        internal void upravitZaznam(int pozice = 0)
-        {
-            try
-            {
-                //nacist aktualni data
-                string[] radky = System.IO.File.ReadAllLines(csvSoubor);
- 
-                //array pro nová data
-                string[] data_temp = new string[radky.Length];
- 
-                //filtrace upravených a stávajících dat
-                for (int i = 0; i < radky.Length; i++)
-                {
-                    string[] radek = radky[i].Split(";");
- 
-                    if (!(zaznamJeStejny(jmeno, radek)))
-                    {
-                        data_temp[i] = radek[0] + ";" + radek[1];
-                    } else
-                    {
-                        data_temp[i] = jmeno + ";" + skore.ToString();
-                    }
-                }
- 
-                //zapsat upravená do souboru
-                File.WriteAllLines(csvSoubor, data_temp);
- 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Nastal error: " + ex);
-            }
-        }
- * */

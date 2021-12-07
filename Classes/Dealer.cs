@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace cernejJack.Classes
 {
@@ -35,6 +36,7 @@ namespace cernejJack.Classes
                 player.cards.Add(deck.giveCard());
                 if (player.sumCards() > 21)
                 {
+                    
                     this.gameOver();
                 }
             }
@@ -50,6 +52,10 @@ namespace cernejJack.Classes
                 player.cards.AddRange((List<Card>)deck.giveCard(n));
                 if (player.sumCards() > 21)
                 {
+                    /*Console.WriteLine("dealerovy karty: (" + this.sumCards() + ")");
+                    this.writeCards();
+                    Console.WriteLine("tvoje karty: (" + this.player.sumCards() + ")");
+                    this.player.writeCards();*/
                     this.gameOver();
                 }
             }
@@ -109,6 +115,8 @@ namespace cernejJack.Classes
 
             while (true)
             {
+                Console.Clear();
+                header();
                 Console.WriteLine("kolik chces vsadit?");
                 string bet = this.player.bet();
                 if (int.TryParse(bet, out int value))
@@ -125,16 +133,18 @@ namespace cernejJack.Classes
                     {
                         if (this.player.chips - value >= 0)
                         {
-                            Console.WriteLine(this.player.chips + "wtf " + value);
                             this.playersBet = value;
                             this.player.chips -= value;
                             chipsUpdate();
-                            Console.WriteLine("dik");
+                            Console.WriteLine("dekuji");
+                            Thread.Sleep(250);
+                            Console.Clear();
+                            header();
                             break;
                         }
                         else
                         {
-                            Console.WriteLine(this.player.chips + "wtf " + value);
+                       
                             Console.WriteLine("nemas dost penez");
                         }
 
@@ -155,19 +165,31 @@ namespace cernejJack.Classes
             string playersAction = Console.ReadLine();
             if (this.player.sumCards() > 21)
             {
-                Console.WriteLine("dealer");
-                Console.WriteLine(this.cards[0].value);
+                
+                Console.WriteLine("dealerovy karty: ("+this.sumCards()+")");
+                this.writeCards();
+                Console.WriteLine("tvoje karty: (" + this.player.sumCards() + ")");
+                this.player.writeCards();
+                Console.ReadLine();
 
                 gameOver();
             }
-            if (playersAction == "hit")
+            else if (this.player.sumCards() == 21 && this.player.cards.Count == 2)
             {
-
-                this.giveCardTo(player);
-                Console.WriteLine("dealer");
+                Console.WriteLine("Dostal jsi Cernyho Jacka!!!");
+                this.playersChips(playersBet * 2, true);
+            }
+            else if (playersAction == "hit")
+            {
+                Thread.Sleep(250);
+                Console.Clear();
+                header();
+                
+                Console.WriteLine("dealerovy karty: ("+this.sumCards()+")");
                 Console.WriteLine(this.cards[0].value);
+                this.giveCardTo(player);
                 this.player.writeCards();
-
+                
                 if (this.gameOverBool)
                 {
                     this.playersActions();
@@ -176,24 +198,34 @@ namespace cernejJack.Classes
             }
             else if (playersAction == "stand")
             {
-                Console.WriteLine("dealer");
+                Thread.Sleep(250);
+                Console.Clear();
+                header();
+                Console.WriteLine("dealerovy karty:");
                 Console.WriteLine(this.cards[0].value);
 
             }
             else if (playersAction == "double")
             {
-
+                Thread.Sleep(250);
+                Console.Clear();
+                header();
                 player.chips -= this.playersBet;
                 chipsUpdate();
                 this.playersBet *= 2;
                 this.giveCardTo(player);
-                Console.WriteLine("dealer");
+                
+                Console.WriteLine("dealerovy karty: (" + this.sumCards() + ")");
                 Console.WriteLine(this.cards[0].value);
 
             }
             else
             {
+
                 Console.WriteLine("akce neexistuje");
+                Thread.Sleep(250);
+                Console.Clear();
+                header();
                 this.playersActions();
             }
         }
@@ -239,7 +271,7 @@ namespace cernejJack.Classes
         }
         public void dealersMove()
         {
-            if (this.sumCards() < 17 && this.sumCards() < this.player.sumCards())
+            if (this.sumCards() < 17)
             {
                 this.giveCardTo(this);
                 this.dealersMove();
@@ -250,16 +282,22 @@ namespace cernejJack.Classes
 
 
             //this.giveCardTo(this);
-            Console.WriteLine("dealer (" + this.sumCards() + ")");
+            Console.WriteLine("dealerovy karty: (" + this.sumCards()+")");
             for (int i = 0; i < this.cards.Count; i++)
             {
                 Console.WriteLine(this.cards[i].value);
+                if (i>0)
+                {
+                    Thread.Sleep(250);
+                }
             }
         }
         public void evaluate()
         {
-            Console.WriteLine("//dealer: " + this.sumCards());
-            Console.WriteLine("//player: " + this.player.sumCards());
+            Console.Clear();
+            header();
+            //Console.WriteLine("//dealer: " + this.sumCards());
+            //Console.WriteLine("//player: " + this.player.sumCards());
             if (this.gameOverBool)
             {
 
@@ -268,7 +306,8 @@ namespace cernejJack.Classes
                 {
 
                     this.writeCards();
-                    Console.WriteLine("hrac");
+                  
+                    this.player.writeCards();
 
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
@@ -277,7 +316,8 @@ namespace cernejJack.Classes
                 {
 
                     this.writeCards();
-                    Console.WriteLine("hrac");
+                  
+                    this.player.writeCards();
 
                     this.playersChips(playersBet, true);
                 }
@@ -285,7 +325,8 @@ namespace cernejJack.Classes
                 {
 
                     this.writeCards();
-                    Console.WriteLine("hrac");
+                  
+                    this.player.writeCards();
 
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
@@ -294,15 +335,23 @@ namespace cernejJack.Classes
                 {
 
                     this.writeCards();
-                    Console.WriteLine("hrac");
+                  
+                    this.player.writeCards();
 
-                    Console.WriteLine("prohral jsi");
+                    this.gameOver();
                 }
             }
         }
         public void gameOver()
         {
+            Console.Clear();
+            header();
+            this.writeCards();
+            this.player.writeCards();
             Console.WriteLine("prohral jsi");
+            destroyCards(player);
+            destroyCards(this);
+            Thread.Sleep(1000);
             this.gameOverBool = false;
 
         }
@@ -326,7 +375,11 @@ namespace cernejJack.Classes
                     file.WriteLine(usersArrayLines[i]);
                 }
                 //file.WriteLine(usersArrayLines);
-            }
+            }      
+        }
+        static void header()
+        {
+            Console.WriteLine("    BLACK JACK ♦♣♠♥");
         }
     } //class dealer
 }

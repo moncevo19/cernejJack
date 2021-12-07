@@ -20,7 +20,7 @@ namespace cernejJack.Classes
         public void writeCards()
         {
 
-            Console.WriteLine("hrac");
+            Console.WriteLine("tvoje karty:  (" + this.sumCards() + ")");
             for (int i = 0; i < this.cards.Count; i++)
             {
                 Console.WriteLine(this.cards[i].value);
