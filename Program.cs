@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
+
 namespace cernejJack
 {
     class Program
@@ -43,7 +44,7 @@ namespace cernejJack
                     for (int j = 0; j < i; j++)
                     {
                         Console.Write(slovo[j]);
-                        
+
                     }
                     Thread.Sleep(time);
                     Console.Clear();
@@ -53,6 +54,8 @@ namespace cernejJack
                 Console.ReadKey();
             }
             //loading("BLACK JACK",250);
+            welcome();
+           
             while (loginBool)
             {
             StartOfLogin:
@@ -60,7 +63,7 @@ namespace cernejJack
                 bool _loginBool = false;
                 bool registerBool = false;
                 header();
-                Console.WriteLine("Prihlasit/Registrovat");
+                Console.WriteLine("\x1b[1mP\x1b[0mrihlasit/\x1b[1mR\x1b[0megistrovat");
                 var tmp = Console.ReadKey().Key;
                 if (tmp == ConsoleKey.P)
                 {
@@ -126,6 +129,10 @@ namespace cernejJack
                 }
                 else
                 {
+                    wopopop:
+                    bool wopopop = true;
+                    Console.Clear();
+                    header();
                     Console.WriteLine("Prihlaseni");
                     Console.WriteLine("Jmeno:");
                     string nick = Console.ReadLine();
@@ -134,6 +141,7 @@ namespace cernejJack
                         goto StartOfLogin;
                     }
                     string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);
+                    
                     for (int i = 0; i < usersArrayLines.Length; i++) //uloz si csv do pole podle radku
                     {
                         string[] uzivatel = usersArrayLines[i].Split(";"); //ulozi do pole uzivatel i-tou radku
@@ -160,7 +168,7 @@ namespace cernejJack
                                     player.chips = Int32.Parse(uzivatel[2]);
                                     player.nick = nick;
                                     player.pass = pass;
-
+                                    wopopop = false;
                                     break;
                                 }
                             }
@@ -168,6 +176,10 @@ namespace cernejJack
 
                         }
 
+                    }
+                    if (wopopop)
+                    {
+                        goto wopopop;
                     }
 
 
@@ -186,7 +198,7 @@ namespace cernejJack
             //menu
             while (gameBool)
             {
-                
+
                 bool error = false;
 
                 while (menuBool)
@@ -236,11 +248,13 @@ namespace cernejJack
 
                         dealer.giveCardTo(player, 2); //dealer da 2 karty hraci
 
-                        Console.WriteLine("dealerovy karty: (" + dealer.sumCards() + ")");
-                        Console.WriteLine(dealer.cards[0].value);//dealer ukaze jednu svoji kartu
+                        Console.WriteLine("dealerovy karty: ");
+                        //Console.WriteLine(dealer.cards[0].value);//dealer ukaze jednu svoji kartu
+                        dealer.writeFirstCard();
 
 
-                        player.writeCards(); //hrac ukaze karty
+
+                            player.writeCards("tvoje karty: "); //hrac ukaze karty
                         //Console.WriteLine(player.sumCards());
 
                         dealer.playersActions();
@@ -275,7 +289,24 @@ namespace cernejJack
                 {
                     Console.Clear();
                     header();
-                    Console.WriteLine("neexistujou");
+                    Console.WriteLine("nejlepsi hraci: ");
+                    
+                    string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);//uloz si csv do pole podle radku 
+                    List<string[]> best = new List<string[]>();
+
+                    foreach (string item in usersArrayLines)
+                    {
+                        best.Add(item.Split(";"));
+                    }
+                    var bestUsers = best.OrderBy(x => x[2]);
+
+                    int i = 0;
+                    foreach (var item in bestUsers)
+                    {
+                        i++;
+                        Console.WriteLine((i) + ". " + item[0] + " - " + item[2]);
+                        
+                    }
                     Console.ReadKey();
                 }
                 else if (menuAction == "u")
@@ -333,6 +364,19 @@ Vítej ve hře Black Jack pro pokračování stiskni jakoukoli klávesu.
 ");
             Console.ReadLine();
         }
+        static void welcome()
+        {
+            Console.WriteLine(@"﻿
+  ____  _            _           _            _    
+ |  _ \| |          | |         | |          | |   
+ | |_) | | __ _  ___| | __      | | __ _  ___| | __
+ |  _ <| |/ _` |/ __| |/ /  _   | |/ _` |/ __| |/ /
+ | |_) | | (_| | (__|   <  | |__| | (_| | (__|   < 
+ |____/|_|\__,_|\___|_|\_\  \____/ \__,_|\___|_|\_\");
+            Thread.Sleep(1500);
+        }
+
+        
 
 
     }//class program
