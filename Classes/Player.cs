@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace cernejJack.Classes
 
@@ -17,14 +18,51 @@ namespace cernejJack.Classes
 
         }
 
-        public void writeCards()
+        public void writeCards(string text) // kur... (ani zanadavat si nemuzu kdyz trpim :-( ) proc to nevraci prvni kartu???
         {
-
-            Console.WriteLine("tvoje karty:  (" + this.sumCards() + ")");
-            for (int i = 0; i < this.cards.Count; i++)
+            
+           
+                
+            
+            Console.WriteLine(text);
+            for (int j = 0; j < this.cards.Count; j++)
             {
-                Console.WriteLine(this.cards[i].value);
+                Console.Write("  ┌───────┐");
             }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |" + this.cards[j].returnValueString() + "     |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |       |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |   " + this.cards[j].returnColorString() + "   |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |       |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |    " + this.cards[j].returnValueString() + " |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  └───────┘");
+            }
+            Console.WriteLine();
+            
+
+
         }
         public int sumCards()
         {

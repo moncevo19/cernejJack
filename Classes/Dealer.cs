@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-
 namespace cernejJack.Classes
 {
 
     class Dealer
     {
+
         public static string csvSoubor = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "players.csv"); //relativni cesta
         public bool gameOverBool = true;
         public List<Card> cards = new List<Card>();
@@ -36,7 +36,7 @@ namespace cernejJack.Classes
                 player.cards.Add(deck.giveCard());
                 if (player.sumCards() > 21)
                 {
-                    
+
                     this.gameOver();
                 }
             }
@@ -53,7 +53,7 @@ namespace cernejJack.Classes
                 if (player.sumCards() > 21)
                 {
                     /*Console.WriteLine("dealerovy karty: (" + this.sumCards() + ")");
-                    this.writeCards();
+                    this.writeCards("dealerovy karty:");
                     Console.WriteLine("tvoje karty: (" + this.player.sumCards() + ")");
                     this.player.writeCards();*/
                     this.gameOver();
@@ -137,14 +137,14 @@ namespace cernejJack.Classes
                             this.player.chips -= value;
                             chipsUpdate();
                             Console.WriteLine("dekuji");
-                            Thread.Sleep(250);
+                            Thread.Sleep(500);
                             Console.Clear();
                             header();
                             break;
                         }
                         else
                         {
-                       
+
                             Console.WriteLine("nemas dost penez");
                         }
 
@@ -154,22 +154,29 @@ namespace cernejJack.Classes
                 }
                 else
                 {
-                    Console.WriteLine("jses uplne retardovana.");
+                    Console.WriteLine("jses uplne retardovana, uplne.");
                 }
+                Thread.Sleep(500);
 
             }
         }
         public void playersActions()
         {
-            Console.WriteLine("zvol akci");
+            if (player.cards.Count == 2)
+            {
+                Console.WriteLine("zvol akci (\x1b[1mS\x1b[0mtand, \x1b[1mH\x1b[0mit, \x1b[1mD\x1b[0mouble)");
+            }
+            else
+            {
+                Console.WriteLine("zvol akci (\x1b[1mS\x1b[0mtand, \x1b[1mH\x1b[0mit)");
+            }
+            
             string playersAction = Console.ReadLine();
+            playersAction = playersAction.ToLower();
             if (this.player.sumCards() > 21)
             {
-                
-                Console.WriteLine("dealerovy karty: ("+this.sumCards()+")");
-                this.writeCards();
-                Console.WriteLine("tvoje karty: (" + this.player.sumCards() + ")");
-                this.player.writeCards();
+
+                this.player.writeCards("tvoje karty: ");
                 Console.ReadLine();
 
                 gameOver();
@@ -179,55 +186,78 @@ namespace cernejJack.Classes
                 Console.WriteLine("Dostal jsi Cernyho Jacka!!!");
                 this.playersChips(playersBet * 2, true);
             }
-            else if (playersAction == "hit")
+            else if (playersAction == "hit" || playersAction == "h")
             {
-                Thread.Sleep(250);
-                Console.Clear();
-                header();
-                
-                Console.WriteLine("dealerovy karty: ("+this.sumCards()+")");
-                Console.WriteLine(this.cards[0].value);
+                Thread.Sleep(500);
                 this.giveCardTo(player);
-                this.player.writeCards();
+                wopopop();
+
                 
+
                 if (this.gameOverBool)
                 {
                     this.playersActions();
                 }
 
             }
-            else if (playersAction == "stand")
+            else if (playersAction == "stand" || playersAction == "s")
             {
-                Thread.Sleep(250);
-                Console.Clear();
-                header();
-                Console.WriteLine("dealerovy karty:");
-                Console.WriteLine(this.cards[0].value);
+                Thread.Sleep(500);
+
 
             }
-            else if (playersAction == "double")
+            else if (playersAction == "double" || playersAction == "d")
             {
-                Thread.Sleep(250);
+                Thread.Sleep(500);
                 Console.Clear();
-                header();
+                
                 player.chips -= this.playersBet;
                 chipsUpdate();
                 this.playersBet *= 2;
                 this.giveCardTo(player);
-                
-                Console.WriteLine("dealerovy karty: (" + this.sumCards() + ")");
-                Console.WriteLine(this.cards[0].value);
-
+                wopopop();
             }
             else
             {
 
                 Console.WriteLine("akce neexistuje");
-                Thread.Sleep(250);
-                Console.Clear();
-                header();
+                Thread.Sleep(500);
+                this.wopopop();
+                
+
+               
+                
                 this.playersActions();
             }
+        }
+        public void wopopop()
+        {
+            if (gameOverBool)
+            {
+                Console.Clear();
+                header();
+                Console.WriteLine("dealerovy karty: ");
+                this.writeFirstCard();
+                Console.WriteLine("tvoje karty: ");
+                player.writeCards("");
+            }
+            
+        }
+        public void writeFirstCard()
+        {
+            if (this.cards.Count > 0)
+            {
+                Console.WriteLine(@"
+  ┌───────┐
+  |" + this.cards[0].returnValueString() + @"     |
+  |       |
+  |   " + this.cards[0].returnColorString() + @"   |
+  |       |
+  |    " + this.cards[0].returnValueString() + @" |
+  └───────┘
+                        ");
+            }
+            
         }
         public int sumCards()
         {
@@ -277,37 +307,171 @@ namespace cernejJack.Classes
                 this.dealersMove();
             }
         }
-        public void writeCards()
+        public void writeCards(string text)
         {
 
+            /*          
+                        //tady budou triky
+                        //this.giveCardTo(this);
+                        Console.WriteLine("dealerovy karty: (" + this.sumCards() + ")");
+                        for (int i = 0; i < this.cards.Count; i++)
+                        {
+                            *//*
+                            //lvl 1
+                            Console.WriteLine(@"
+                            ┌───────┐
+                            | "+this.cards[i].value+@"     |
+                            |       |
+                            |   "+this.cards[i].returnColorString()+ @"   |
+                            |       |
+                            |     " + this.cards[i].value + @" |
+                            └───────┘
+            ");
+                            *//*
+                            //lvl 2
+                            if (this.cards[i].value == 10)
+                            {
 
-            //this.giveCardTo(this);
-            Console.WriteLine("dealerovy karty: (" + this.sumCards()+")");
-            for (int i = 0; i < this.cards.Count; i++)
+                                Console.WriteLine(@"
+                            ┌───────┐
+                            | " + this.cards[i].returnValueString() + @"    |
+                            |       |
+                            |   " + this.cards[i].returnColorString() + @"   |
+                            |       |
+                            |    " + this.cards[i].returnValueString() + @" |
+                            └───────┘
+            ");
+                            }
+                            else
+                            {
+                                Console.WriteLine(@"
+                            ┌───────┐
+                            | " + this.cards[i].returnValueString() + @"     |
+                            |       |
+                            |   " + this.cards[i].returnColorString() + @"   |
+                            |       |
+                            |     " + this.cards[i].returnValueString() + @" |
+                            └───────┘
+            ");
+
+                            }
+
+
+
+
+                            if (i > 0)
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }*/
+            /*
+            //lvl 3 uaaaaaa
+            for (int j = 0; j < this.cards.Count; j++)
             {
-                Console.WriteLine(this.cards[i].value);
-                if (i>0)
-                {
-                    Thread.Sleep(250);
-                }
+                Console.Write("  ┌───────┐");
             }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  | " + this.cards[j].returnValueString() + "     |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |       |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |   " + this.cards[j].returnColorString() + "   |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |       |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  |     " + this.cards[j].returnValueString() + " |");
+            }
+            Console.WriteLine();
+            for (int j = 0; j < this.cards.Count; j++)
+            {
+                Console.Write("  └───────┘");
+            }*/
+
+
+
+
+            //lvl 4 super uaaaaaaaaaaaaa
+            for (int i = 1; i < this.cards.Count + 1; i++)
+            {
+                
+                
+                Console.Clear();
+                header();
+                Console.WriteLine("dealerovy karty: ");
+                
+
+                //Console.WriteLine(text);
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  ┌───────┐");
+                }
+                Console.WriteLine();
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  |" + this.cards[j].returnValueString() + "     |");
+                }
+                Console.WriteLine();
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  |       |");
+                }
+                Console.WriteLine();
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  |   " + this.cards[j].returnColorString() + "   |");
+                }
+                Console.WriteLine();
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  |       |");
+                }
+                Console.WriteLine();
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  |    " + this.cards[j].returnValueString() + " |");
+                }
+                Console.WriteLine();
+                for (int j = 0; j < i; j++)
+                {
+                    Console.Write("  └───────┘");
+                }
+                Thread.Sleep(500);
+                Console.WriteLine();
+                Console.WriteLine("tvoje karty: ");
+                player.writeCards("");
+                
+            }
+            
+
         }
         public void evaluate()
         {
-            Console.Clear();
-            header();
+            
             //Console.WriteLine("//dealer: " + this.sumCards());
             //Console.WriteLine("//player: " + this.player.sumCards());
             if (this.gameOverBool)
             {
+                Console.Clear();
+                header();
+                this.writeCards("");
 
 
                 if (this.sumCards() > 21)
                 {
-
-                    this.writeCards();
-                  
-                    this.player.writeCards();
 
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
@@ -315,18 +479,13 @@ namespace cernejJack.Classes
                 else if (this.sumCards() == player.sumCards())
                 {
 
-                    this.writeCards();
-                  
-                    this.player.writeCards();
 
                     this.playersChips(playersBet, true);
                 }
                 else if (this.player.sumCards() > this.sumCards())
                 {
 
-                    this.writeCards();
-                  
-                    this.player.writeCards();
+
 
                     Console.WriteLine("vyhral jsi");
                     this.playersChips(playersBet * 2, true);
@@ -334,9 +493,8 @@ namespace cernejJack.Classes
                 else
                 {
 
-                    this.writeCards();
-                  
-                    this.player.writeCards();
+
+                    //this.player.writeCards("tvoje karty: ");
 
                     this.gameOver();
                 }
@@ -344,11 +502,25 @@ namespace cernejJack.Classes
         }
         public void gameOver()
         {
-            Console.Clear();
-            header();
-            this.writeCards();
-            this.player.writeCards();
+            //Console.Clear();
+            //header();
+            //this.player.writeCards("tvoje karty: ");
+            if (player.sumCards() > 21)
+            {
+                Console.Clear();
+                header();
+                Console.WriteLine("dealerovy karty: ");
+                this.writeFirstCard();
+                Console.WriteLine("tvoje karty: ");
+                player.writeCards("");
+                
+            }
+            
             Console.WriteLine("prohral jsi");
+            
+            
+
+        
             destroyCards(player);
             destroyCards(this);
             Thread.Sleep(1000);
@@ -358,7 +530,7 @@ namespace cernejJack.Classes
         public void chipsUpdate()
         {
             string[] usersArrayLines = System.IO.File.ReadAllLines(csvSoubor);//uloz si csv do pole podle radku
-            for (int i = 0; i < usersArrayLines.Length; i++) 
+            for (int i = 0; i < usersArrayLines.Length; i++)
             {
                 string[] uzivatel = usersArrayLines[i].Split(";"); //ulozi do pole uzivatel i-tou radku
                 if (this.player.nick == uzivatel[0])
@@ -371,15 +543,16 @@ namespace cernejJack.Classes
             {
                 for (int i = 0; i < usersArrayLines.Length; i++)
                 {
-                    
+
                     file.WriteLine(usersArrayLines[i]);
                 }
                 //file.WriteLine(usersArrayLines);
-            }      
+            }
         }
-        static void header()
+        public void header()
         {
             Console.WriteLine("    BLACK JACK ♦♣♠♥");
+            Console.WriteLine("mas " + this.player.chips + " zetonu");
         }
     } //class dealer
 }
